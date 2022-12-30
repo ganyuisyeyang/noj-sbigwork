@@ -1,0 +1,397 @@
+#include <windows.h>
+#include <commctrl.h>
+#include <stdio.h>
+#include "resource.h"
+#include <time.h>
+#include <tchar.h>
+#include <winuser.h>
+#include <stdlib.h>
+HINSTANCE hInst;
+TrackMouseEvent()
+LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    int wmId, wmEvent;
+    static int i=0, j=0;
+    static HFONT hFont;
+    static HWND hBtn;
+    static HWND hStatic;
+    static HWND hBtn1;
+    static HWND hBtn4;
+    static HWND hBtn2;
+    static HWND hBtn3;
+    clock_t begin_t,finish_t;
+    long t;
+    switch(uMsg)
+    {
+    case WM_CREATE:
+            //创建逻辑字体
+            hFont = CreateFont(
+                -15/*高度*/, -7.5/*宽度*/, 0, 0, 400 /*一般这个值设为400*/,
+                FALSE/*不带斜体*/, FALSE/*不带下划线*/, FALSE/*不带删除线*/,
+                DEFAULT_CHARSET,  //使用默认字符集
+                OUT_CHARACTER_PRECIS, CLIP_CHARACTER_PRECIS,  //这行参数不用管
+                DEFAULT_QUALITY,  //默认输出质量
+                FF_DONTCARE,  //不指定字体族*/
+                TEXT("微软雅黑")  //字体名
+            );
+            //创建静态文本控件
+           beginer: hStatic = CreateWindow(
+                TEXT("static"),  //静态文本框的类名
+                TEXT("你好，欢迎来到彩虹答辩世界"),  //控件的文本
+                WS_CHILD /*子窗口*/ | WS_VISIBLE /*创建时显示*/ | WS_BORDER /*带边框*/ ,
+                300 /*X坐标*/, 190/*Y坐标*/, 200/*宽度*/, 100/*高度*/, hWnd/*父窗口句柄*/,
+                (HMENU)1,  //为控件指定一个唯一标识符
+                hInst,  //当前实例句柄
+                NULL
+            );
+            //创建按钮控件
+            hBtn = CreateWindow(
+                TEXT("button"), //按钮控件的类名
+                TEXT("点击这里试试"),
+                WS_CHILD | WS_VISIBLE | WS_BORDER | BS_FLAT/*扁平样式*/,
+                330 /*X坐标*/, 300 /*Y坐标*/, 150 /*宽度*/, 50/*高度*/,
+                hWnd, (HMENU)2 /*控件唯一标识符*/, hInst, NULL
+            );
+            SendMessage(hStatic,WM_SETFONT,(WPARAM)hFont,0);//设置文本框字体
+            SendMessage(hBtn   ,WM_SETFONT,(WPARAM)hFont,0);//设置按钮字体
+            break;
+        case WM_COMMAND:
+            wmId    = LOWORD(wParam);//鼠标键是否按下
+            wmEvent = HIWORD(wParam);
+            switch (wmId){
+                case 2:
+                {
+                    switch(i)
+                    {
+                    case 0:
+                    {
+                        SetWindowText(hStatic, TEXT("哦！你点击了下面的按钮！那么……要不要再按一次？"));//hStatic是大框句柄，这是改变大框文字。
+                        SetWindowText(hBtn,TEXT("宇宙毁灭"));//hBnt是按钮的句柄，改变按钮文字。
+                        i=10;
+                        break;
+                    }
+                    case 10:
+                    {
+                        SetWindowText(hStatic, TEXT("那么……宇宙毁灭了"));
+                        SetWindowText(hBtn,TEXT("按钮"));
+                        i=114;
+                        break;
+                    }
+                    case 114:
+                    {
+                        SetWindowText(hStatic, TEXT("既然宇宙都毁灭了，你为什么要点这个按钮呢？"));
+                        i=30;
+                        break;
+                    }
+                    case 30:
+                    {
+                        SetWindowText(hStatic, TEXT("够了，这只是个无意义的按钮！你再按下去它仍然是无意义的！NOTHING！"));
+                        i=40;
+                        break;
+                    }
+                    case 40:
+                    {
+                        SetWindowText(hStatic, TEXT("你为什么还要按它！难不成你认为每个按钮存在就要一定有什么用吗？Oh！天呐！你不会真的这么想吧，那么这次你错了。"));
+                        i=50;
+                        break;
+                    }
+                    case 50:
+                    {
+                        SetWindowText(hStatic, TEXT("哦！我的闪光钛合金究极无敌豪华至尊版CPU啊！为什么会让我摊上这么一个用户！你就不能放着这个按钮不管吗？"));
+                        i=60;
+                        break;
+                    }
+                    case 60:
+                    {
+                        SetWindowText(hStatic, TEXT("好吧，看来你是非得按出个名堂来了！那么我就给你两个按钮吧。"));
+                        DestroyWindow(hBtn);
+                        hBtn=NULL;
+                        hBtn2=CreateWindow(TEXT("button"), //按钮控件的类名
+                        TEXT("这是一个按钮"),
+                        WS_CHILD | WS_VISIBLE | WS_BORDER | BS_FLAT/*扁平样式*/,
+                        230 /*X坐标*/, 300 /*Y坐标*/, 150 /*宽度*/, 50/*高度*/,
+                        hWnd, (HMENU)3 /*控件唯一标识符*/, hInst, NULL);
+                        SendMessage(hBtn2,WM_SETFONT,(WPARAM)hFont,0);
+
+                        hBtn3=CreateWindow(TEXT("button"), //按钮控件的类名
+                        TEXT("这是另一个"),
+                        WS_CHILD | WS_VISIBLE | WS_BORDER | BS_FLAT/*扁平样式*/,
+                        400 /*X坐标*/, 300 /*Y坐标*/, 150 /*宽度*/, 50/*高度*/,
+                        hWnd, (HMENU)4 /*控件唯一标识符*/, hInst, NULL);
+                        SendMessage(hBtn3,WM_SETFONT,(WPARAM)hFont,0);
+                        break;
+                    }
+                    }
+                    break;
+                }
+                case 3:
+                {
+                    switch(j)
+                    {
+                    case 0:
+                        SetWindowText(hStatic,TEXT("不是，你还真的动了我宝贵的左按钮？你知不知道它是我花了多少时间创建出来的？0.0000001ms……管他的，反正很宝贵。你可别继续碰他了。"));
+                        j=100;
+                        break;
+                    case 100:
+                        SetWindowText(hStatic,TEXT("你！怎么！还敢！动它！"));
+                        for(begin_t=clock();;)
+                        {
+                            finish_t=clock();
+                            t=finish_t-begin_t;
+                            if(t==1000)
+                                break;
+                        }
+                        SetWindowText(hStatic,TEXT("不行，我得把我的按钮藏起来……藏在这！你一定找不到！"));
+                        DestroyWindow(hBtn2);
+                        DestroyWindow(hBtn3);
+                        hBtn2=NULL,hBtn3=NULL;
+
+                        hBtn2=CreateWindow(TEXT("button"), //按钮控件的类名
+                        TEXT("这是一个按钮"),
+                        WS_CHILD | WS_VISIBLE | WS_BORDER | BS_FLAT/*扁平样式*/,
+                        230 /*X坐标*/, 600 /*Y坐标*/, 150 /*宽度*/, 50/*高度*/,
+                        hWnd, (HMENU)5 /*控件唯一标识符*/, hInst, NULL);
+                        SendMessage(hBtn2,WM_SETFONT,(WPARAM)hFont,0);
+
+                        hBtn3=CreateWindow(TEXT("button"), //按钮控件的类名
+                        TEXT("这是另一个"),
+                        WS_CHILD | WS_VISIBLE | WS_BORDER | BS_FLAT/*扁平样式*/,
+                        400 /*X坐标*/, 600 /*Y坐标*/, 150 /*宽度*/, 50/*高度*/,
+                        hWnd, (HMENU)6 /*控件唯一标识符*/, hInst, NULL);
+                        SendMessage(hBtn2,WM_SETFONT,(WPARAM)hFont,0);
+                        break;
+                    }
+                    break;
+                }
+                case 4:
+                {
+                        switch(j)
+                    {
+                    case 0:
+                        SetWindowText(hStatic,TEXT("不是，你还真的动了我宝贵的右按钮？你知不知道它是我花了多少时间创建出来的？0.0000001ms……管他的，反正很宝贵。你可别继续碰他了。"));
+                        j=100;
+                        break;
+                    case 100:
+                        SetWindowText(hStatic,TEXT("你！怎么！还敢！动它！"));
+                        for(begin_t=clock();;)
+                        {
+                            finish_t=clock();
+                            t=finish_t-begin_t;
+                            if(t==1000)
+                                break;
+                        }
+                        SetWindowText(hStatic,TEXT("不行，我得把我的按钮藏起来……藏在这！你一定找不到！"));
+                        DestroyWindow(hBtn2);
+                        DestroyWindow(hBtn3);
+                        hBtn2=NULL,hBtn3=NULL;
+
+                        hBtn2=CreateWindow(TEXT("button"), //按钮控件的类名
+                        TEXT("这是一个按钮"),
+                        WS_CHILD | WS_VISIBLE | WS_BORDER | BS_FLAT/*扁平样式*/,
+                        230 /*X坐标*/, 800 /*Y坐标*/, 150 /*宽度*/, 50/*高度*/,
+                        hWnd, (HMENU)5 /*控件唯一标识符*/, hInst, NULL);
+                        SendMessage(hBtn2,WM_SETFONT,(WPARAM)hFont,0);
+
+                        hBtn3=CreateWindow(TEXT("button"), //按钮控件的类名
+                        TEXT("这是另一个"),
+                        WS_CHILD | WS_VISIBLE | WS_BORDER | BS_FLAT/*扁平样式*/,
+                        400 /*X坐标*/, 800 /*Y坐标*/, 150 /*宽度*/, 50/*高度*/,
+                        hWnd, (HMENU)6 /*控件唯一标识符*/, hInst, NULL);
+                        SendMessage(hBtn3,WM_SETFONT,(WPARAM)hFont,0);
+                        break;
+                    }
+                    break;
+                }
+                case 5:
+                case 6:
+                {
+                    printf("6");
+                    SetWindowText(hStatic,TEXT("什么！你居然还是发现了！哦！不行，我这次要直接删除它们！我的删除键呢？让我找找……"));
+                    for(begin_t=clock();;)
+                    {
+                        finish_t=clock();
+                        t=finish_t-begin_t;
+                        if(t==2500)
+                            break;
+                    }
+                    printf("6.1");
+                    SetWindowText(hStatic,TEXT("只要我点一下它那么就能删除它们啦！"));
+                }
+                case 2330:
+                {
+                    hBtn1=CreateWindow(TEXT("button"), //按钮控件的类名
+                    TEXT("删除"),
+                    WS_CHILD | WS_BORDER | WS_VISIBLE | BS_FLAT/*扁平样式*/,
+                    330 /*X坐标*/, 300 /*Y坐标*/, 150 /*宽度*/, 50/*高度*/,
+                    hWnd, (HMENU)2331 /*控件唯一标识符*/, hInst, NULL);
+                    break;
+                }
+                case 2331:
+                {
+                    DestroyWindow(hBtn1);
+                    DestroyWindow(hBtn2);
+                    DestroyWindow(hBtn3);
+                    hBtn2=NULL,hBtn3=NULL,hBtn1=NULL;
+                    int x,y;
+                    x=300+rand()%300;
+                    y=200+rand()%200;
+                    hBtn1=CreateWindow(TEXT("button"), //按钮控件的类名
+                    TEXT("删除"),
+                    WS_CHILD | WS_BORDER | WS_VISIBLE | BS_FLAT/*扁平样式*/,
+                    x /*X坐标*/, y /*Y坐标*/, 150 /*宽度*/, 50/*高度*/,
+                    hWnd, (HMENU)2332 /*控件唯一标识符*/, hInst, NULL);
+                    break;
+                }
+                case 2332:
+                {
+                    DestroyWindow(hBtn1);
+                    int x,y;
+                    x=300+rand()%300;
+                    y=200+rand()%200;
+                    hBtn1=CreateWindow(TEXT("button"), //按钮控件的类名
+                    TEXT("删除"),
+                    WS_CHILD | WS_BORDER | WS_VISIBLE | BS_FLAT/*扁平样式*/,
+                    x /*X坐标*/, y /*Y坐标*/, 150 /*宽度*/, 50/*高度*/,
+                    hWnd, (HMENU)233 /*控件唯一标识符*/, hInst, NULL);
+                    hBtn4=CreateWindow(TEXT("button"), //按钮控件的类名
+                    TEXT("保护"),
+                    WS_CHILD | WS_BORDER | WS_VISIBLE | BS_FLAT/*扁平样式*/,
+                    x /*X坐标*/, y /*Y坐标*/, 150 /*宽度*/, 50/*高度*/,
+                    hWnd, (HMENU)2333 /*控件唯一标识符*/, hInst, NULL);
+                    break;
+                }
+                case 2333:
+                {
+
+                }
+                case 7:
+                {
+
+                    j=1004;
+
+                    for(begin_t=clock();;)
+                    {
+                        finish_t=clock();
+                        t=finish_t-begin_t;
+                        if(t==2500)
+                            break;
+                    }
+                    DestroyWindow(hBtn2);
+                    DestroyWindow(hBtn4);
+                    DestroyWindow(hBtn3);
+                    DestroyWindow(hBtn1);
+                    hBtn2=NULL,hBtn3=NULL,hBtn1=0;
+                    SetWindowText(hStatic,TEXT("现在没有按钮啦！终于，我可以清静了……暂时"));
+                    for(begin_t=clock();;)
+                    {
+                        finish_t=clock();
+                        t=finish_t-begin_t;
+                        if(t==1980)
+                            break;
+                    }
+                    printf("8");
+                    SetWindowText(hStatic,TEXT("什么？你还想继续玩？那你可以选择下面的按钮。（结局1-1：被毁灭的按钮"));
+                    hBtn3=CreateWindow(TEXT("button"), //按钮控件的类名
+                    TEXT("重试"),
+                    WS_CHILD | WS_VISIBLE | WS_BORDER | BS_FLAT/*扁平样式*/,
+                    330 /*X坐标*/, 400 /*Y坐标*/, 150 /*宽度*/, 50/*高度*/,
+                    hWnd, (HMENU)9 /*控件唯一标识符*/, hInst, NULL);
+                    SendMessage(hBtn3,WM_SETFONT,(WPARAM)hFont,0);
+                    break;
+                }
+                case 8:
+                {
+                    printf("13121 ");
+                    switch (j)
+                    {
+                        case 1003:
+                        {
+
+                            break;
+                        }
+                        case 1004:
+                        {
+                            break;
+                        }
+                    }
+                    break;
+                }
+                case 9:
+                {
+                    printf("9");
+                    DestroyWindow(hBtn3);
+                    hBtn3=0;
+                    goto beginer;
+                    break;
+                }
+                default:
+                    return DefWindowProc(hWnd, uMsg, wParam, lParam);//其它不处理的东西记得交给系统。
+            }
+            break;
+    case WM_CLOSE:
+        if (IDYES == MessageBox(NULL, _T("Are you sure?"), _T("提示"), MB_YESNO))//这是关闭时的提示框。
+            DestroyWindow(hWnd);//这是用来销毁窗口的
+            DestroyWindow(hStatic);
+        break;
+    case WM_DESTROY:
+        PostQuitMessage(0);//这是告诉系统删除运行内存的。
+        break;
+    }
+    return DefWindowProc(hWnd,uMsg,wParam,lParam);
+}
+
+int WINAPI WinMain(HINSTANCE hInstance,
+                    HINSTANCE hPreInstance,
+                    LPSTR     lpCmdLine,
+                    int       nCmdShow)
+{
+ 	int r=0,g=0,b=0;
+ 	WNDCLASSW fir;
+    srand((unsigned)time(NULL));
+    r=rand()%256;
+    g=(rand()+123)%256;
+    b=256+256-r-g;
+    fir.hbrBackground=CreateSolidBrush(RGB(r,g,b));//这是每次打开随机变色
+    wchar_t ZhNBName[]=L"ZHGuiFoundation";
+    wchar_t Rainbow[]=L"RAINBOW SHIT!!!";
+ 	fir.style        =CS_HREDRAW|CS_VREDRAW;
+ 	fir.lpfnWndProc  =WindowProc;
+ 	fir.cbClsExtra   =0;
+ 	fir.cbWndExtra   =0;
+ 	fir.hInstance    =hInstance;
+ 	fir.hIcon        =LoadIcon(NULL,IDI_APPLICATION);
+ 	fir.hCursor      =LoadCursor(NULL,IDC_ARROW);           //加载鼠标（改一下看看，我没改过）
+    fir.lpszMenuName =NULL;
+    fir.lpszClassName=ZhNBName;
+    //窗口风格编写
+    if(FALSE==RegisterClassW(&fir))
+    {
+        MessageBox(NULL, _T("You need to buy a better computer now!"), _T("attention"),MB_OK);
+        return 0;
+    }
+    //窗口注册
+    HWND hWnd = CreateWindowExW(
+    WS_EX_RIGHTSCROLLBAR,
+    ZhNBName,
+    Rainbow,
+    WS_BORDER|WS_CAPTION|WS_SYSMENU|WS_MAXIMIZEBOX|WS_MINIMIZEBOX,
+    200,
+    200,
+    800,
+    600,
+    NULL,
+    NULL,
+    hInstance,
+    NULL);
+    //创建窗口
+    ShowWindow(hWnd,SW_SHOW);
+    UpdateWindow(hWnd);//让窗口不停止更新
+    MSG msg;
+    while(GetMessage(&msg,NULL,0,0))//这是让窗口反馈的
+    {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+
+return 0;
+}
